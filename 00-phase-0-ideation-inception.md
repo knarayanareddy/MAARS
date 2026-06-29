@@ -4,6 +4,16 @@ Source: maarsprompt.md
 
 ---
 
+> **Phase 0 has no predecessor.** It is the entry point of the MAARS loop, so the
+> meta-loop's handoff steps don't apply yet: there is no prior Snapshot Capsule to
+> load (Step 1), nothing for the **Continuity Agent** to hand off (Step 2), and the
+> **Research Agent** (Step 3) runs against the raw idea rather than prior ADRs.
+> Start directly at the **Builder Panel** below. From Phase 1 onward, every phase
+> begins with Continuity → Research as described in
+> [`ORDER-OF-OPERATIONS.md`](ORDER-OF-OPERATIONS.md).
+
+---
+
 ## 📋 PHASE 0 — PROJECT IDEATION & INCEPTION PROMPT
 
 ```
@@ -110,3 +120,15 @@ Builder Panel addresses EVERY critique point by point.
 ```
 
 ---
+
+## ▶ Next in the MAARS loop
+
+> The `STEP 1/2/3` headers above are *this phase's* internal builder → critique → remediation steps. They run **inside** the meta-loop defined in [`ORDER-OF-OPERATIONS.md`](ORDER-OF-OPERATIONS.md) — they are not the same as the 11 meta-steps.
+
+After the Critique Panel (+ Devil's Advocate), continue the loop:
+
+- **Score** → [`meta-agents/03-scoring-aggregator.md`](meta-agents/03-scoring-aggregator.md)
+- **If < 9/10 (iteration ≤ 5)** → [`meta-agents/04-remediation-agent.md`](meta-agents/04-remediation-agent.md) → re-critique
+- **If still < 9/10 after 5 iterations** → [`meta-agents/05-arbitration-agent.md`](meta-agents/05-arbitration-agent.md)
+- **On unanimous ≥ 9/10** → [`meta-agents/06-living-document-agent.md`](meta-agents/06-living-document-agent.md) → [`meta-agents/07-phase-snapshot-agent.md`](meta-agents/07-phase-snapshot-agent.md)
+- **Advance to Phase 1 — Requirements & Specification** → fire [`meta-agents/01-continuity-agent.md`](meta-agents/01-continuity-agent.md) with the snapshot capsule as input
