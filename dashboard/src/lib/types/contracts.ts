@@ -123,3 +123,23 @@ export interface RoutingOverview {
   preset: Preset;
   routes: RoutePlan[];
 }
+
+export type AuditVerdict = "Pass" | "Warn";
+
+export interface AuditFinding {
+  label: string;
+  verdict: AuditVerdict;
+  detail: string;
+}
+
+export interface AuditSection {
+  name: string;
+  findings: AuditFinding[];
+}
+
+export interface DashboardAuditReport {
+  overall: AuditVerdict;
+  security: AuditSection;
+  performance: AuditSection;
+  accessibility: AuditSection;
+}

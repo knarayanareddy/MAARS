@@ -1,4 +1,5 @@
 pub mod contracts;
+pub mod audit;
 pub mod db;
 pub mod engine;
 pub mod fs_service;
