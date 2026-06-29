@@ -1,51 +1,108 @@
 import { useMemo, useState } from "react";
 import { useDashboardStore } from "./stores/useDashboardStore";
 import { BuilderCard, ScoreCard } from "./features/workspace/stream/Cards";
+import type { LoopMode, Preset } from "./lib/types/contracts";
+
+const PRESETS: Preset[] = ["Lite", "Standard", "Full"];
+const MODES: { value: LoopMode; label: string }[] = [
+  { value: "full-auto", label: "Full-Auto" },
+  { value: "semi-auto", label: "Semi-Auto" },
+  { value: "supervised", label: "Supervised" }
+];
 
 export function App() {
   const [idea, setIdea] = useState("Build a MAARS dashboard");
-  const { phase, score, stream, runPhase0 } = useDashboardStore();
-  const canRun = idea.trim().length > 0;
+  const {
+    score,
+    stream,
+    preset,
+    mode,
+    phases,
+    running,
+    halted,
+    needsHuman,
+    setPreset,
+    setMode,
+    runProject
+  } = useDashboardStore();
+  const canRun = idea.trim().length > 0 && !running;
 
   const status = useMemo(() => {
+    if (halted) return ["HALTED", "fail"] as const;
     if (score?.decision === "PASS") return ["PASS", "pass"] as const;
     if (score?.decision === "FAIL") return ["FAIL", "fail"] as const;
     if (score?.decision === "ARBITRATION") return ["ARBITRATION", "arb"] as const;
     return ["IDLE", "arb"] as const;
-  }, [score]);
+  }, [score, halted]);
 
   return (
     <div className="shell">
       <aside className="panel">
         <div className="card">
           <strong>MAARS</strong>
-          <div className="muted">Phase A walking skeleton</div>
-        </div>
-        <div className="card">
-          <div className="muted">Phase</div>
-          <div>{phase}</div>
+          <div className="muted">Phase B — full loop</div>
         </div>
         <div className="card">
           <div className="muted">Gate</div>
           <div className={`badge ${status[1]}`}>{status[0]}</div>
         </div>
+        <div className="card">
+          <div className="muted">Pipeline ({preset})</div>
+          <ol className="pipeline" aria-label="Phase pipeline">
+            {phases.map((p) => (
+              <li key={p.phaseId} className={`pipeline-step ${p.status}`}>
+                <span className="dot" aria-hidden="true" />
+                Phase {p.phaseId}
+                <span className="muted"> · {p.status}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
       </aside>
       <main className="main">
         <div className="card">
-          <h1>Intake Wizard — Express Path</h1>
-          <p className="muted">Single model for Phase A. No routing table yet.</p>
+          <h1>Intake — Run a Project</h1>
+          <p className="muted">
+            Runs the full 11-step loop across every phase of the selected preset, in the selected mode.
+          </p>
           <textarea
             rows={4}
             style={{ width: "100%", boxSizing: "border-box" }}
             value={idea}
             onChange={(e) => setIdea(e.target.value)}
           />
-          <div className="row" style={{ marginTop: 8 }}>
-            <button disabled={!canRun} onClick={() => runPhase0(idea)}>
-              Run Phase 0
+          <div className="row" style={{ marginTop: 8, gap: 12 }}>
+            <label>
+              Preset{" "}
+              <select value={preset} onChange={(e) => setPreset(e.target.value as Preset)}>
+                {PRESETS.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Mode{" "}
+              <select value={mode} onChange={(e) => setMode(e.target.value as LoopMode)}>
+                {MODES.map((m) => (
+                  <option key={m.value} value={m.value}>
+                    {m.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button disabled={!canRun} onClick={() => runProject(idea)}>
+              {running ? "Running…" : "Run Project"}
             </button>
           </div>
         </div>
+        {needsHuman && (
+          <div className="card" role="alert">
+            <strong>Needs human input</strong>
+            <div className="muted">{needsHuman}</div>
+          </div>
+        )}
         <BuilderCard text={stream.builder} />
         <ScoreCard score={score} />
       </main>
@@ -56,7 +113,9 @@ export function App() {
         </div>
         <div className="card">
           <strong>Stream</strong>
-          <div className="stream" aria-live="off" aria-busy="true">{stream.builder || "Awaiting run..."}</div>
+          <div className="stream" aria-live="off" aria-busy={running}>
+            {stream.builder || "Awaiting run..."}
+          </div>
         </div>
       </aside>
     </div>

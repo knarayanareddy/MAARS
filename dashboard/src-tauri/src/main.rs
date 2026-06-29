@@ -4,7 +4,11 @@ use tauri::Manager;
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![commands::run_phase0_command, commands::read_config])
+        .invoke_handler(tauri::generate_handler![
+            commands::run_phase0_command,
+            commands::run_project_command,
+            commands::read_config
+        ])
         .setup(|app| {
             let window = app.get_webview_window("main").expect("main window");
             window.show()?;

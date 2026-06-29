@@ -24,3 +24,4 @@ rusqlite = { version = "0.32", features = ["bundled"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
 tempfile = "3"
 rusqlite = { version = "0.32", features = ["bundled"] }
+async-trait = "0.1"

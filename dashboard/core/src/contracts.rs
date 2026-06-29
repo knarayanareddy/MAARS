@@ -87,7 +87,7 @@ pub enum StructuralMarker {
 
 /// The single backend -> frontend seam (ADR-005).
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "type", rename_all = "camelCase")]
+#[serde(tag = "type", rename_all = "camelCase", rename_all_fields = "camelCase")]
 pub enum AgentEvent {
     StepStart { run_id: String, phase_id: String, step_id: StepId, iteration: i64 },
     Token { run_id: String, step_id: StepId, chunk: String, seq: u64 },
