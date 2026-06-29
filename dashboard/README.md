@@ -63,6 +63,17 @@ and a supervised reject.
 The frontend now surfaces the route plan so the selected preset shows which provider each
 role would use and how close the prompt is to the configured budget.
 
+## Phase D — UX polish and accessibility
+
+- **All visible cards now have explicit empty / loading / error states** instead of silent
+  blanks.
+- **Project hub** shows recent project runs, with an empty state before the first run and a
+  simple history after each successful project execution.
+- **Notifications rail** captures run start, human-input requests, and failures so the
+  right-hand panel always has something actionable.
+- **Accessibility:** skip link to the workspace, live region status text, `role="alert"`
+  for failures, and label/fieldset-style controls for the intake form.
+
 ## LLM clients
 
 - `MockLLMClient` — offline, used by tests and as the default.

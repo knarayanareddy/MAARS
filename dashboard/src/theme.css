@@ -46,11 +46,17 @@ button, input, textarea {
 .pass { background: rgba(64,192,87,0.18); color: #97f3a7; }
 .fail { background: rgba(245,159,0,0.18); color: #ffd17b; }
 .arb { background: rgba(250,82,82,0.18); color: #ff9b9b; }
+.error-card { border: 1px solid rgba(255,95,95,0.35); background: rgba(255,95,95,0.08); }
 .stream {
   white-space: pre-wrap;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   min-height: 96px;
 }
+.skip-link { position: absolute; left: -999px; top: 0; background: #fff; color: #000; padding: 8px; z-index: 10; }
+.skip-link:focus { left: 8px; top: 8px; }
+.empty-state { padding: 8px 0; }
+.hub-list, .notif-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.hub-row { display: flex; flex-direction: column; gap: 2px; padding: 8px; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; }
 .route-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .route-row { display: flex; flex-direction: column; gap: 4px; padding: 8px; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; }
 .healthy { background: rgba(149, 243, 167, 0.14); color: #bdf7c7; }
