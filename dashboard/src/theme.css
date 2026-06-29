@@ -59,10 +59,25 @@ button, input, textarea {
 .hub-row { display: flex; flex-direction: column; gap: 2px; padding: 8px; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; }
 .route-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .route-row { display: flex; flex-direction: column; gap: 4px; padding: 8px; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; }
+.audit { display: flex; flex-direction: column; gap: 10px; }
+.audit-section { display: flex; flex-direction: column; gap: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); }
+.audit-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .healthy { background: rgba(149, 243, 167, 0.14); color: #bdf7c7; }
 .amber { background: rgba(255, 209, 123, 0.16); color: #ffe3aa; }
 .red { background: rgba(255, 155, 155, 0.16); color: #ffb8b8; }
 .critical { background: rgba(255, 95, 95, 0.18); color: #ffc0c0; }
+.pass { background: rgba(149, 243, 167, 0.14); color: #bdf7c7; }
+
+:focus-visible { outline: 2px solid #7dd3fc; outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 .pipeline { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .pipeline-step { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .pipeline-step .dot { width: 8px; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.2); flex: 0 0 auto; }

@@ -74,6 +74,15 @@ role would use and how close the prompt is to the configured budget.
 - **Accessibility:** skip link to the workspace, live region status text, `role="alert"`
   for failures, and label/fieldset-style controls for the intake form.
 
+## Phase E — security, performance, and accessibility audit
+
+- **Security audit** summarizes the hardening already wired into the backend: backend-only
+  key handling, provider URL validation, path containment, and redaction.
+- **Performance audit** highlights the route-budget meter and warns if any route exceeds the
+  amber threshold.
+- **Accessibility audit** confirms the skip link, live regions, focus visibility, and
+  reduced-motion-friendly styling are present.
+
 ## LLM clients
 
 - `MockLLMClient` — offline, used by tests and as the default.

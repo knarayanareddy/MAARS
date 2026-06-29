@@ -19,6 +19,7 @@ export function App() {
     mode,
     phases,
     routeOverview,
+    audit,
     projects,
     notifications,
     lastError,
@@ -28,13 +29,15 @@ export function App() {
     setPreset,
     setMode,
     runProject,
-    refreshRoutes
+    refreshRoutes,
+    refreshAudit
   } = useDashboardStore();
   const canRun = idea.trim().length > 0 && !running;
 
   useEffect(() => {
     void refreshRoutes(idea);
-  }, [idea, preset, refreshRoutes]);
+    void refreshAudit(idea);
+  }, [idea, preset, refreshRoutes, refreshAudit]);
 
   const status = useMemo(() => {
     if (halted) return ["HALTED", "fail"] as const;
@@ -178,6 +181,34 @@ export function App() {
                 <li key={`${note}-${i}`}>{note}</li>
               ))}
             </ul>
+          )}
+        </div>
+        <div className="card">
+          <strong>Audit</strong>
+          {audit ? (
+            <div className="audit">
+              <div className={`badge ${audit.overall === "Pass" ? "pass" : "fail"}`}>
+                {audit.overall}
+              </div>
+              {[audit.security, audit.performance, audit.accessibility].map((section) => (
+                <div key={section.name} className="audit-section">
+                  <strong>{section.name}</strong>
+                  <ul className="audit-list">
+                    {section.findings.map((finding) => (
+                      <li key={finding.label}>
+                        <span className={`badge ${finding.verdict === "Pass" ? "pass" : "fail"}`}>
+                          {finding.verdict}
+                        </span>{" "}
+                        <strong>{finding.label}</strong>
+                        <div className="muted">{finding.detail}</div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="muted">No audit available yet.</div>
           )}
         </div>
         <div className="card">

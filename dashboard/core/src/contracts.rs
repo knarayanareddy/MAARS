@@ -203,3 +203,34 @@ pub struct RoutingOverview {
     pub preset: String,
     pub routes: Vec<RoutePlan>,
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum AuditVerdict {
+    Pass,
+    Warn,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AuditFinding {
+    pub label: String,
+    pub verdict: AuditVerdict,
+    pub detail: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AuditSection {
+    pub name: String,
+    pub findings: Vec<AuditFinding>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DashboardAuditReport {
+    pub overall: AuditVerdict,
+    pub security: AuditSection,
+    pub performance: AuditSection,
+    pub accessibility: AuditSection,
+}

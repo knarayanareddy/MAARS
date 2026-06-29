@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type {
   AgentEvent,
+  DashboardAuditReport,
   GateDecision,
   LoopMode,
   Preset,
@@ -33,6 +34,7 @@ interface DashboardState {
   phases: PhaseProgress[];
   routes: RoutePlan[];
   routeOverview: RoutingOverview | null;
+  audit: DashboardAuditReport | null;
   projects: ProjectMeta[];
   notifications: string[];
   lastError: string | null;
@@ -44,6 +46,7 @@ interface DashboardState {
   runPhase0: (idea: string) => Promise<void>;
   runProject: (idea: string) => Promise<void>;
   refreshRoutes: (idea: string) => Promise<void>;
+  refreshAudit: (idea: string) => Promise<void>;
 }
 
 // Mirrors core/src/phases.rs so the navigator can render the pipeline before the
@@ -75,6 +78,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
   phases: PRESET_PHASES.Standard.map((phaseId) => ({ phaseId, status: "pending" })),
   routes: [],
   routeOverview: null,
+  audit: null,
   projects: [],
   notifications: [],
   lastError: null,
@@ -95,6 +99,16 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         routeOverview: null,
         routes: []
       });
+    }
+  },
+  refreshAudit: async (idea) => {
+    const { preset } = get();
+    try {
+      const { invoke } = await import("@tauri-apps/api/core");
+      const audit = await invoke<DashboardAuditReport>("audit_dashboard_command", { idea, preset });
+      set({ audit });
+    } catch {
+      set({ audit: null });
     }
   },
   runPhase0: async (idea) => {
@@ -146,7 +160,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       lastError: null,
       notifications: [...get().notifications, `Run started: ${idea}`]
     });
-    await get().refreshRoutes(idea);
+    await Promise.all([get().refreshRoutes(idea), get().refreshAudit(idea)]);
 
     const applyEvents = (events: AgentEvent[]) => {
       const phases = PRESET_PHASES[preset].map((phaseId) => ({

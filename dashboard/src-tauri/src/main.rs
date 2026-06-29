@@ -8,6 +8,7 @@ fn main() {
             commands::run_phase0_command,
             commands::run_project_command,
             commands::inspect_routes_command,
+            commands::audit_dashboard_command,
             commands::read_config
         ])
         .setup(|app| {

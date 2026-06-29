@@ -1,4 +1,5 @@
 use maars_core::{
+    audit::audit_dashboard,
     engine::{run_project, AutoDirector, LoopMode, RunSpec},
     llm::{MockLLMClient, OpenAICompatibleClient},
     orchestrator::run_phase0 as core_run_phase0,
@@ -122,4 +123,13 @@ pub fn inspect_routes_command(idea: String, preset: String) -> Result<serde_json
     let registry = default_registry();
     let overview = plan_routes(preset, &idea, &registry);
     serde_json::to_value(overview).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn audit_dashboard_command(idea: String, preset: String) -> Result<serde_json::Value, String> {
+    let preset = Preset::parse(&preset);
+    let registry = default_registry();
+    let overview = plan_routes(preset, &idea, &registry);
+    let audit = audit_dashboard(Some(&overview));
+    serde_json::to_value(audit).map_err(|e| e.to_string())
 }
