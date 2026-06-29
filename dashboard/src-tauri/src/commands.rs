@@ -3,6 +3,7 @@ use maars_core::{
     llm::{MockLLMClient, OpenAICompatibleClient},
     orchestrator::run_phase0 as core_run_phase0,
     phases::Preset,
+    routing::{default_registry, plan_routes},
     ModelSelection, Phase0Context, Phase0Seed,
 };
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -113,4 +114,12 @@ pub async fn run_project_command(
 #[tauri::command]
 pub fn read_config() -> String {
     "Phase A".to_string()
+}
+
+#[tauri::command]
+pub fn inspect_routes_command(idea: String, preset: String) -> Result<serde_json::Value, String> {
+    let preset = Preset::parse(&preset);
+    let registry = default_registry();
+    let overview = plan_routes(preset, &idea, &registry);
+    serde_json::to_value(overview).map_err(|e| e.to_string())
 }

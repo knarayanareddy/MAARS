@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDashboardStore } from "./stores/useDashboardStore";
 import { BuilderCard, ScoreCard } from "./features/workspace/stream/Cards";
 import type { LoopMode, Preset } from "./lib/types/contracts";
@@ -18,14 +18,20 @@ export function App() {
     preset,
     mode,
     phases,
+    routeOverview,
     running,
     halted,
     needsHuman,
     setPreset,
     setMode,
-    runProject
+    runProject,
+    refreshRoutes
   } = useDashboardStore();
   const canRun = idea.trim().length > 0 && !running;
+
+  useEffect(() => {
+    void refreshRoutes(idea);
+  }, [idea, preset, refreshRoutes]);
 
   const status = useMemo(() => {
     if (halted) return ["HALTED", "fail"] as const;
@@ -57,6 +63,23 @@ export function App() {
               </li>
             ))}
           </ol>
+        </div>
+        <div className="card">
+          <div className="muted">Route plan</div>
+          {routeOverview ? (
+            <ul className="route-list">
+              {routeOverview.routes.map((route) => (
+                <li key={route.role} className="route-row">
+                  <strong>{route.role}</strong>
+                  <span className="muted">{route.providerId} · {route.model}</span>
+                  <span className="muted">{route.budget.usedTokens}/{route.budget.limitTokens} · {Math.round(route.budget.ratio * 100)}%</span>
+                  <span className={`badge ${route.budget.band.toLowerCase()}`}>{route.budget.recommendation}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="muted">No route overview yet.</div>
+          )}
         </div>
       </aside>
       <main className="main">

@@ -46,6 +46,23 @@ Verified by `core/tests/engine.rs`: a full Standard run 0→10, crash-then-resum
 manual-score recovery, no-deadlock halt, transient-stream-error retry, arbitration halt,
 and a supervised reject.
 
+## Phase C — model routing and context budgeting (`core/src/routing.rs`)
+
+- **Seven providers** are registered in the router (`OpenAI`, `Anthropic`, `Gemini`,
+  `Custom`, `Ollama`, `llama.cpp`, `MLX`) with capability tags.
+- **Route planning** chooses the best provider per role:
+  - continuity/snapshot → smallest efficient model
+  - research → first function-calling provider
+  - scoring → first JSON-mode provider
+  - builder/critique/arbitration → strongest configured provider
+- **Context budgeting** reports used/limit/% plus a banded recommendation:
+  `Healthy` → `Amber` → `Red` → `Critical`.
+- **SSRF guardrails** validate provider URLs before use: only `http(s)`, loopback by
+  default, metadata/private network hosts blocked without explicit confirmation.
+
+The frontend now surfaces the route plan so the selected preset shows which provider each
+role would use and how close the prompt is to the configured budget.
+
 ## LLM clients
 
 - `MockLLMClient` — offline, used by tests and as the default.

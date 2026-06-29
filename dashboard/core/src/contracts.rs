@@ -132,3 +132,74 @@ pub struct ProjectMeta {
     pub current_phase: String,
     pub last_active: String,
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum RouteRole {
+    Continuity,
+    Research,
+    Builder,
+    Critique,
+    Scoring,
+    Arbitration,
+    Snapshot,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum ContextBand {
+    Healthy,
+    Amber,
+    Red,
+    Critical,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ModelCapabilities {
+    pub json_mode: bool,
+    pub function_calling: bool,
+    pub streaming: bool,
+    pub est_context_window: u32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ProviderRef {
+    pub id: String,
+    pub kind: String,
+    pub label: String,
+    pub base_url: String,
+    pub model: String,
+    pub capabilities: ModelCapabilities,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ContextBudget {
+    pub used_tokens: usize,
+    pub limit_tokens: usize,
+    pub ratio: f64,
+    pub band: ContextBand,
+    pub recommendation: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RoutePlan {
+    pub role: RouteRole,
+    pub provider_id: String,
+    pub provider_kind: String,
+    pub model: String,
+    pub reason: String,
+    pub requirements: Vec<String>,
+    pub capabilities: ModelCapabilities,
+    pub budget: ContextBudget,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RoutingOverview {
+    pub preset: String,
+    pub routes: Vec<RoutePlan>,
+}
