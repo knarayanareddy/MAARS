@@ -40,7 +40,7 @@ and the numbered MAARS Rules.
 | `00-master-system-prompt.md` | The "operating system" — prepended to every session. 7 Core Principles, scoring protocol, persona protocol, and the Universal Critique / Iteration Loop / Scoring Rubric templates. |
 
 ### Phases (the SDLC)
-The 16 SDLC phases, one file each. `.5` files are interstitial phases.
+The 17 SDLC phases, one file each. `.5` files are interstitial phases.
 
 | File | Phase |
 |------|-------|
