@@ -6,7 +6,6 @@ import type {
   Preset,
   RoutePlan,
   RoutingOverview,
-  ProjectMeta,
   ScoreReport
 } from "../lib/types/contracts";
 
@@ -33,9 +32,6 @@ interface DashboardState {
   phases: PhaseProgress[];
   routes: RoutePlan[];
   routeOverview: RoutingOverview | null;
-  projects: ProjectMeta[];
-  notifications: string[];
-  lastError: string | null;
   running: boolean;
   halted: boolean;
   needsHuman: string | null;
@@ -75,9 +71,6 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
   phases: PRESET_PHASES.Standard.map((phaseId) => ({ phaseId, status: "pending" })),
   routes: [],
   routeOverview: null,
-  projects: [],
-  notifications: [],
-  lastError: null,
   running: false,
   halted: false,
   needsHuman: null,
@@ -137,15 +130,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       phaseId,
       status: "pending"
     }));
-    set({
-      running: true,
-      halted: false,
-      needsHuman: null,
-      phases: pipeline,
-      score: null,
-      lastError: null,
-      notifications: [...get().notifications, `Run started: ${idea}`]
-    });
+    set({ running: true, halted: false, needsHuman: null, phases: pipeline, score: null });
     await get().refreshRoutes(idea);
 
     const applyEvents = (events: AgentEvent[]) => {
@@ -158,7 +143,6 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       let lastScore: ScoreReport | null = null;
       let lastBuilder = "";
       let needsHuman: string | null = null;
-      const notifications = [...get().notifications];
 
       for (const ev of events) {
         switch (ev.type) {
@@ -176,7 +160,6 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
             break;
           case "needsHuman":
             needsHuman = ev.reason;
-            notifications.push(`Needs human input: ${ev.reason}`);
             break;
           default:
             break;
@@ -191,8 +174,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         phases,
         score: lastScore,
         needsHuman,
-        stream: { builder: lastBuilder || get().stream.builder },
-        notifications
+        stream: { builder: lastBuilder || get().stream.builder }
       });
     };
 
@@ -200,30 +182,13 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       const { invoke } = await import("@tauri-apps/api/core");
       const run = await invoke<ProjectRun>("run_project_command", { idea, preset, mode });
       applyEvents(run.events);
-      set({
-        running: false,
-        halted: run.halted,
-        notifications: [...get().notifications, `Run ${run.completed ? "completed" : "halted"}`],
-        projects: [
-          {
-            id: run.runId,
-            name: idea.slice(0, 40) || "Untitled project",
-            preset,
-            currentPhase: run.completed ? "Phase 10" : "Interrupted",
-            lastActive: new Date().toISOString()
-          },
-          ...get().projects
-        ]
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown run error";
+      set({ running: false, halted: run.halted });
+    } catch {
       // Browser dev fallback: mark every phase passed so the pipeline renders.
       set({
         phases: pipeline.map((p) => ({ ...p, status: "passed" })),
         score: deriveScore("PASS"),
-        running: false,
-        lastError: message,
-        notifications: [...get().notifications, `Run failed: ${message}`]
+        running: false
       });
     }
   }

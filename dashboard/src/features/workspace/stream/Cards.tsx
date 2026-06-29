@@ -1,47 +1,20 @@
 import type { ScoreReport } from "../../../lib/types/contracts";
 
-type CardState = {
-  loading?: boolean;
-  emptyLabel?: string;
-  error?: string | null;
-};
-
-export function BuilderCard({ text, loading, error, emptyLabel = "No builder output yet." }: { text: string } & CardState) {
+export function BuilderCard({ text }: { text: string }) {
   return (
     <section className="card">
       <h2>Builder Card</h2>
-      {error ? (
-        <div className="error-card" role="alert">
-          <strong>Error</strong>
-          <div className="muted">{error}</div>
-        </div>
-      ) : loading ? (
-        <div className="muted">Compiling prompt…</div>
-      ) : (
-        <pre className="stream">{text || emptyLabel}</pre>
-      )}
+      <pre className="stream">{text || "No builder output yet."}</pre>
     </section>
   );
 }
 
-export function ScoreCard({
-  score,
-  loading,
-  error,
-  emptyLabel = "Awaiting score..."
-}: { score: ScoreReport | null } & CardState) {
+export function ScoreCard({ score }: { score: ScoreReport | null }) {
   return (
     <section className="card">
       <h2>Score Card</h2>
-      {error ? (
-        <div className="error-card" role="alert">
-          <strong>Error</strong>
-          <div className="muted">{error}</div>
-        </div>
-      ) : loading ? (
-        <div className="muted">Scoring in progress…</div>
-      ) : !score ? (
-        <div className="muted">{emptyLabel}</div>
+      {!score ? (
+        <div className="muted">Awaiting score...</div>
       ) : (
         <>
           <div className={`badge ${score.decision === "PASS" ? "pass" : score.decision === "FAIL" ? "fail" : "arb"}`}>
