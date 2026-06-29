@@ -1,0 +1,53 @@
+:root {
+  color-scheme: dark;
+  --bg0: #08111d;
+  --bg1: #101a2b;
+  --bg2: #152238;
+  --fg: #f2f6ff;
+  --muted: #98a7c1;
+  --accent: #7c9cff;
+  --pass: #40c057;
+  --fail: #f59f00;
+  --arb: #fa5252;
+  font-family: Inter, system-ui, sans-serif;
+}
+body {
+  margin: 0;
+  background: var(--bg0);
+  color: var(--fg);
+}
+button, input, textarea {
+  font: inherit;
+}
+.shell {
+  display: grid;
+  grid-template-columns: 220px 1fr 280px;
+  min-height: 100vh;
+}
+.panel {
+  border-right: 1px solid rgba(255,255,255,0.08);
+  background: var(--bg1);
+}
+.panel.right { border-right: 0; border-left: 1px solid rgba(255,255,255,0.08); }
+.main {
+  background: linear-gradient(180deg, var(--bg1), var(--bg0));
+  padding: 16px;
+}
+.card {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.muted { color: var(--muted); }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.badge { border-radius: 999px; padding: 2px 8px; font-size: 12px; }
+.pass { background: rgba(64,192,87,0.18); color: #97f3a7; }
+.fail { background: rgba(245,159,0,0.18); color: #ffd17b; }
+.arb { background: rgba(250,82,82,0.18); color: #ff9b9b; }
+.stream {
+  white-space: pre-wrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  min-height: 96px;
+}
