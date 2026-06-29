@@ -95,6 +95,23 @@ trigger condition and a single next action.
 | 10 | Living Document Agent | Verdict = PASS (unanimous ≥ 9) |
 | 11 | Phase Snapshot Agent | After Living Document, before advancing |
 
+### Phase 0 exception
+
+Phase 0 is the entry point and has **no predecessor**, so its handoff steps are
+no-ops: there is no prior Snapshot Capsule (Step 1) and nothing for the
+Continuity Agent to hand off (Step 2). The Research Agent (Step 3) still runs,
+but against the raw idea rather than prior ADRs. Phase 0 effectively begins at
+the Builder Panel (Step 4). Every phase from 1 onward runs the full 11-step loop.
+
+### A note on "Step" numbering
+
+Each phase prompt (`00`–`10`) has its own internal `STEP 1 / 2 / 3`
+(Builder Panel → Critique Panel → Remediation). Those are **local** to the phase
+and are not the same as the 11 meta-steps above. The mapping is: phase
+`STEP 1` = meta Step 4, phase `STEP 2` = meta Steps 5–6, phase `STEP 3` = meta
+Step 8. The meta-steps wrap the phase prompt; the phase prompt does not replace
+them.
+
 ---
 
 ## The MAARS Rules
