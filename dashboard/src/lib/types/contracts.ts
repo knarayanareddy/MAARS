@@ -80,3 +80,46 @@ export interface ProjectMeta {
   currentPhase: string;
   lastActive: string;
 }
+
+export type RouteRole = "continuity" | "research" | "builder" | "critique" | "scoring" | "arbitration" | "snapshot";
+export type ContextBand = "Healthy" | "Amber" | "Red" | "Critical";
+
+export interface ModelCapabilities {
+  jsonMode: boolean;
+  functionCalling: boolean;
+  streaming: boolean;
+  estContextWindow: number;
+}
+
+export interface ProviderRef {
+  id: string;
+  kind: string;
+  label: string;
+  baseUrl: string;
+  model: string;
+  capabilities: ModelCapabilities;
+}
+
+export interface ContextBudget {
+  usedTokens: number;
+  limitTokens: number;
+  ratio: number;
+  band: ContextBand;
+  recommendation: string;
+}
+
+export interface RoutePlan {
+  role: RouteRole;
+  providerId: string;
+  providerKind: string;
+  model: string;
+  reason: string;
+  requirements: string[];
+  capabilities: ModelCapabilities;
+  budget: ContextBudget;
+}
+
+export interface RoutingOverview {
+  preset: Preset;
+  routes: RoutePlan[];
+}

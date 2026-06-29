@@ -7,6 +7,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             commands::run_phase0_command,
             commands::run_project_command,
+            commands::inspect_routes_command,
             commands::read_config
         ])
         .setup(|app| {

@@ -1,5 +1,13 @@
 import { create } from "zustand";
-import type { AgentEvent, GateDecision, LoopMode, Preset, ScoreReport } from "../lib/types/contracts";
+import type {
+  AgentEvent,
+  GateDecision,
+  LoopMode,
+  Preset,
+  RoutePlan,
+  RoutingOverview,
+  ScoreReport
+} from "../lib/types/contracts";
 
 type StreamState = { builder: string };
 
@@ -22,6 +30,8 @@ interface DashboardState {
   preset: Preset;
   mode: LoopMode;
   phases: PhaseProgress[];
+  routes: RoutePlan[];
+  routeOverview: RoutingOverview | null;
   running: boolean;
   halted: boolean;
   needsHuman: string | null;
@@ -29,6 +39,7 @@ interface DashboardState {
   setMode: (mode: LoopMode) => void;
   runPhase0: (idea: string) => Promise<void>;
   runProject: (idea: string) => Promise<void>;
+  refreshRoutes: (idea: string) => Promise<void>;
 }
 
 // Mirrors core/src/phases.rs so the navigator can render the pipeline before the
@@ -58,12 +69,27 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
   preset: "Standard",
   mode: "full-auto",
   phases: PRESET_PHASES.Standard.map((phaseId) => ({ phaseId, status: "pending" })),
+  routes: [],
+  routeOverview: null,
   running: false,
   halted: false,
   needsHuman: null,
   setPreset: (preset) =>
     set({ preset, phases: PRESET_PHASES[preset].map((phaseId) => ({ phaseId, status: "pending" })) }),
   setMode: (mode) => set({ mode }),
+  refreshRoutes: async (idea) => {
+    const { preset } = get();
+    try {
+      const { invoke } = await import("@tauri-apps/api/core");
+      const overview = await invoke<RoutingOverview>("inspect_routes_command", { idea, preset });
+      set({ routeOverview: overview, routes: overview.routes });
+    } catch {
+      set({
+        routeOverview: null,
+        routes: []
+      });
+    }
+  },
   runPhase0: async (idea) => {
     const score: ScoreReport = {
       phase: 0,
@@ -105,6 +131,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       status: "pending"
     }));
     set({ running: true, halted: false, needsHuman: null, phases: pipeline, score: null });
+    await get().refreshRoutes(idea);
 
     const applyEvents = (events: AgentEvent[]) => {
       const phases = PRESET_PHASES[preset].map((phaseId) => ({
