@@ -1,0 +1,21 @@
+[package]
+name = "maars_dashboard"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+maars_core = { path = "../core" }
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+tokio.workspace = true
+tauri = { version = "2", features = [] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+[features]
+default = []
+custom-protocol = ["tauri/custom-protocol"]

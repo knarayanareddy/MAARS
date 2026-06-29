@@ -1,0 +1,42 @@
+name: dashboard-ci
+
+on:
+  push:
+    branches: [main]
+    paths: ["dashboard/**", ".github/workflows/dashboard-ci.yml"]
+  pull_request:
+    paths: ["dashboard/**", ".github/workflows/dashboard-ci.yml"]
+
+defaults:
+  run:
+    working-directory: dashboard
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: dashboard/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm build
+
+  core:
+    # The tauri-free `core` crate holds all orchestration logic and the
+    # critical-path integration test, so CI verifies it without the GUI libs.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: dashboard
+      - run: cargo test -p maars_core --manifest-path Cargo.toml
