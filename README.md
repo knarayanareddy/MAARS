@@ -32,6 +32,72 @@ and the numbered MAARS Rules.
 
 ---
 
+## Adapting MAARS to your project
+
+MAARS is a **process framework, not a tech stack** — it adapts to essentially
+any software project idea. There is no project-specific hardcoding anywhere:
+Phase 0 starts from `[INSERT YOUR IDEA HERE]`, every later phase takes "prior
+phase deliverables" as input, and builders/critics are *personas* that reason
+about **your** chosen stack rather than dictating one. Concrete tech mentions
+(PostgreSQL, JWT, iOS versions, GDPR/HIPAA/PCI) are illustrative examples inside
+critique prompts, not requirements.
+
+To adapt it: paste the master prompt → fill in Phase 0 with your idea and
+constraints (platform, users, scale, compliance, tech preferences) → pick the
+phases and critic personas that apply → run the loop. Scale the ceremony to the
+project; its value grows with complexity.
+
+### Project-size presets
+
+Pick a preset as a starting point, then add or drop phases as your project
+demands. The core spine (Phase 0 → 1 → 2 → 4) is always recommended.
+
+| Preset | Good for | Run these phases | Meta-agents |
+|--------|----------|------------------|-------------|
+| **Lite** | Scripts, one-off prototypes, spikes, static sites | 0 → 1 → 4 | Scoring + Remediation only (skip Continuity/Research/Snapshot — single sitting) |
+| **Standard** | Typical web/mobile app, internal tool, SaaS MVP | 0 → 1 → 1.5 → 2 → 2.5 → 3 → 4 → 5 → 6 → 7 → 8 | Full loop |
+| **Full** | Regulated, security-sensitive, or multi-team platforms | All 17 phases (0 → 10, every `.5`) | Full loop, Arbitration enabled |
+
+### Which phases to include
+
+Drop a phase when its subject doesn't exist in your project:
+
+| Phase | Skip when… |
+|-------|-----------|
+| `1.5` API / Interface Design | no external/internal API surface (e.g. a pure script) |
+| `2.5` Database Design | no persistent data layer |
+| `3` UX / UI Design | backend-/API-only, no human-facing UI |
+| `5.5` Integration & E2E Testing | single component, no integrations |
+| `6.5` Data Migration & Seeding | greenfield with no existing data to migrate |
+| `7.5` Beta / Preview | no staged rollout (internal tool, hard launch) |
+| `8.5` Incident Response & Runbooks | non-production / throwaway project |
+| `9` Training & Change Mgmt | no end users to train or onboard |
+
+The `.5` phases are modular by design — removing one doesn't break the
+0 → 10 spine, since each phase consumes the *prior* phase's deliverables
+regardless of which interstitials ran.
+
+### Which personas to include
+
+Each phase names a default Builder Panel and Critique Panel, but you choose the
+**roster** per project:
+
+- **Always keep:** Devil's Advocate, and the security critics (Pen Tester /
+  OWASP Expert) — Shift-Left Security is a non-negotiable principle.
+- **Add** domain critics your project needs: FinOps (cost-sensitive), Privacy /
+  DPO (handles PII), Accessibility Expert (consumer UI), SRE (high-availability),
+  ML/Data Science (model-driven features).
+- **Drop** personas with no surface area: e.g. Mobile/Platform critics for a
+  pure backend, Accessibility for a headless service.
+- **Tune compliance:** the framework leans on GDPR/HIPAA/PCI/SOC2 examples —
+  swap in (or remove) the regimes that actually apply to you.
+
+> Rule of thumb: fewer phases and a leaner panel for small ideas; the full
+> 17-phase loop with arbitration for anything regulated, security-critical, or
+> long-lived.
+
+---
+
 ## Repository layout
 
 ### Master prompt
